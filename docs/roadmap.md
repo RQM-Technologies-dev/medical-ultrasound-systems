@@ -4,10 +4,17 @@
   - Create package, docs, CI, and baseline tests.
 - **Phase 1: Synthetic simulation**
   - Expand synthetic wavefield and channel-generation utilities.
-- **Phase 2: Baseline comparisons**
-  - Add delay-and-sum hooks and baseline benchmarking scripts.
-- **Phase 3: QSG coherence diagnostics**
-  - Develop orientation-aware coherence metrics and artifact analyses.
+- **Phase 2: Quaternionic wavefield representation**
+  - Analytic RF lift
+  - Orientation-axis encoding
+  - Quaternionic channel-wavefield representation
+  - Quaternionic alignment image
+  - Conventional-vs-quaternionic benchmark scripts
+- **Phase 3: Robustness and reporting**
+  - Noise and dropout robustness experiments
+  - Plotting utilities
+  - Small public dataset ingestion where licensing allows
+  - Report-generation notebooks
 - **Phase 4: OEM/academic validation package**
   - Bundle reproducible benchmark reports and technical evidence.
 - **Phase 5: Potential integration discussions**

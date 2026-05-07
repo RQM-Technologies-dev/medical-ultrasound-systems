@@ -23,3 +23,18 @@ Linear array geometry
 → future quaternionic/QSG comparison layer
 
 This pipeline is a software benchmark scaffold and not a validated clinical imaging workflow.
+
+## Phase 2 quaternionic architecture
+
+Phase 2 extends the baseline stack with a quaternionic comparison path:
+
+RFChannelData  
+→ analytic signal  
+→ quaternionic channel wavefield  
+→ pixel-specific orientation axes  
+→ quaternionic delay alignment  
+→ quaternionic alignment factor  
+→ comparison with conventional coherence factor
+
+This layer remains a synthetic software-method prototype for technical evidence
+generation and does not imply clinical readiness.
