@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from .delay import pixel_travel_times_plane_wave, sample_rf_nearest
+from .analytic import analytic_signal_fft
+from .delay import pixel_travel_times_plane_wave, sample_array_linear_per_channel, sample_rf_nearest
 from .qwavefield import make_pixel_orientation_axes
 from .simulation import RFChannelData
 
@@ -40,6 +41,55 @@ def quaternionic_delay_align_pixel(
     return _quaternionic_from_signed_scalar_channels(delayed_channels, axes)
 
 
+def quaternionic_delay_align_pixel_analytic(
+    rf: RFChannelData,
+    x_m: float,
+    z_m: float,
+    sound_speed_m_s: float | None = None,
+) -> np.ndarray:
+    """Return pixel-local quaternion values using analytic phase per channel."""
+    analytic_samples = analytic_signal_fft(rf.samples, axis=-1)
+    c = rf.sound_speed_m_s if sound_speed_m_s is None else float(sound_speed_m_s)
+    travel_times_s = pixel_travel_times_plane_wave(
+        rf.geometry, x_m=float(x_m), z_m=float(z_m), sound_speed_m_s=c
+    )
+    delayed_channels = sample_array_linear_per_channel(
+        samples=analytic_samples,
+        sample_rate_hz=rf.sample_rate_hz,
+        travel_times_s=travel_times_s,
+    )
+    amplitude = np.abs(delayed_channels)
+    phase = np.angle(delayed_channels)
+    axes = make_pixel_orientation_axes(rf.geometry, x_m=float(x_m), z_m=float(z_m))
+    q0 = amplitude * np.cos(phase)
+    q_vec = amplitude[:, np.newaxis] * np.sin(phase)[:, np.newaxis] * axes
+    return np.concatenate((q0[:, np.newaxis], q_vec), axis=1)
+
+
+def _quaternionic_delay_align_pixel_analytic_from_samples(
+    rf: RFChannelData,
+    analytic_samples: np.ndarray,
+    x_m: float,
+    z_m: float,
+    sound_speed_m_s: float,
+) -> np.ndarray:
+    """Internal optimized path for analytic per-pixel alignment."""
+    travel_times_s = pixel_travel_times_plane_wave(
+        rf.geometry, x_m=float(x_m), z_m=float(z_m), sound_speed_m_s=float(sound_speed_m_s)
+    )
+    delayed_channels = sample_array_linear_per_channel(
+        samples=analytic_samples,
+        sample_rate_hz=rf.sample_rate_hz,
+        travel_times_s=travel_times_s,
+    )
+    amplitude = np.abs(delayed_channels)
+    phase = np.angle(delayed_channels)
+    axes = make_pixel_orientation_axes(rf.geometry, x_m=float(x_m), z_m=float(z_m))
+    q0 = amplitude * np.cos(phase)
+    q_vec = amplitude[:, np.newaxis] * np.sin(phase)[:, np.newaxis] * axes
+    return np.concatenate((q0[:, np.newaxis], q_vec), axis=1)
+
+
 def quaternionic_alignment_factor(q_values: np.ndarray) -> float:
     """Return a [0, 1] quaternionic alignment score across channels."""
     q_values = np.asarray(q_values, dtype=float)
@@ -69,6 +119,7 @@ def quaternionic_alignment_image(
     x_grid_m: np.ndarray,
     z_grid_m: np.ndarray,
     sound_speed_m_s: float | None = None,
+    method: str = "analytic",
 ) -> np.ndarray:
     """Compute a quaternionic alignment map over a Cartesian pixel grid."""
     x_grid_m = np.asarray(x_grid_m, dtype=float)
@@ -77,16 +128,29 @@ def quaternionic_alignment_image(
         raise ValueError("x_grid_m and z_grid_m must be 1D arrays.")
 
     c = rf.sound_speed_m_s if sound_speed_m_s is None else float(sound_speed_m_s)
+    method = str(method).lower()
     image = np.zeros((z_grid_m.size, x_grid_m.size), dtype=float)
+    analytic_samples = analytic_signal_fft(rf.samples, axis=-1) if method == "analytic" else None
 
     for iz, z_m in enumerate(z_grid_m):
         for ix, x_m in enumerate(x_grid_m):
-            q_values = quaternionic_delay_align_pixel(
-                rf=rf,
-                x_m=float(x_m),
-                z_m=float(z_m),
-                sound_speed_m_s=c,
-            )
+            if method == "analytic":
+                q_values = _quaternionic_delay_align_pixel_analytic_from_samples(
+                    rf=rf,
+                    analytic_samples=analytic_samples,
+                    x_m=float(x_m),
+                    z_m=float(z_m),
+                    sound_speed_m_s=c,
+                )
+            elif method == "signed":
+                q_values = quaternionic_delay_align_pixel(
+                    rf=rf,
+                    x_m=float(x_m),
+                    z_m=float(z_m),
+                    sound_speed_m_s=c,
+                )
+            else:
+                raise ValueError("method must be one of: 'analytic', 'signed'.")
             image[iz, ix] = quaternionic_alignment_factor(q_values)
     return image
 
@@ -96,6 +160,7 @@ def quaternionic_intensity_image(
     x_grid_m: np.ndarray,
     z_grid_m: np.ndarray,
     sound_speed_m_s: float | None = None,
+    method: str = "analytic",
 ) -> np.ndarray:
     """Compute norm of summed quaternionic channel values per pixel."""
     x_grid_m = np.asarray(x_grid_m, dtype=float)
@@ -104,15 +169,28 @@ def quaternionic_intensity_image(
         raise ValueError("x_grid_m and z_grid_m must be 1D arrays.")
 
     c = rf.sound_speed_m_s if sound_speed_m_s is None else float(sound_speed_m_s)
+    method = str(method).lower()
     image = np.zeros((z_grid_m.size, x_grid_m.size), dtype=float)
+    analytic_samples = analytic_signal_fft(rf.samples, axis=-1) if method == "analytic" else None
 
     for iz, z_m in enumerate(z_grid_m):
         for ix, x_m in enumerate(x_grid_m):
-            q_values = quaternionic_delay_align_pixel(
-                rf=rf,
-                x_m=float(x_m),
-                z_m=float(z_m),
-                sound_speed_m_s=c,
-            )
+            if method == "analytic":
+                q_values = _quaternionic_delay_align_pixel_analytic_from_samples(
+                    rf=rf,
+                    analytic_samples=analytic_samples,
+                    x_m=float(x_m),
+                    z_m=float(z_m),
+                    sound_speed_m_s=c,
+                )
+            elif method == "signed":
+                q_values = quaternionic_delay_align_pixel(
+                    rf=rf,
+                    x_m=float(x_m),
+                    z_m=float(z_m),
+                    sound_speed_m_s=c,
+                )
+            else:
+                raise ValueError("method must be one of: 'analytic', 'signed'.")
             image[iz, ix] = float(np.linalg.norm(np.sum(q_values, axis=0)))
     return image

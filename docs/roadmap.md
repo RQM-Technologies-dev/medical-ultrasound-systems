@@ -10,12 +10,11 @@
   - Quaternionic channel-wavefield representation
   - Quaternionic alignment image
   - Conventional-vs-quaternionic synthetic benchmarks
-- **Phase 3: Robustness and reporting**
-  - Additive noise experiments
-  - Channel dropout experiments
-  - Plotting utilities
-  - Small public dataset ingestion where licensing allows
-  - Report-generation notebooks
+- **Phase 3: Robustness and reporting (current / in progress)**
+  - Robustness sweeps
+  - Report-generation scripts
+  - Analytic-phase quaternionic alignment
+  - Next: plotting utilities and public dataset ingestion if licensing allows
 - **Phase 4: OEM/academic validation package**
   - Bundle reproducible benchmark reports and technical evidence.
 - **Phase 5: Potential integration discussions**

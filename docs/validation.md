@@ -11,3 +11,7 @@ Validation workstreams for this research software are:
 7. Regulatory-pathway separation if future productization is pursued.
 
 All findings should be presented with uncertainty bounds, limitations, and reproducibility notes.
+
+Phase 3 remains synthetic-only and does not validate clinical performance. It is intended to
+test numerical behavior under controlled perturbations before using open research datasets or
+partner-provided data.
