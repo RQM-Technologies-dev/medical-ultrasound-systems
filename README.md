@@ -14,6 +14,10 @@ This repository gathers theory notes, software prototypes, simulation utilities,
 - Not for diagnosis, treatment, or patient-care decisions.
 - Not a replacement for existing ultrasound hardware or certified reconstruction pipelines.
 
+## Medical and regulatory disclaimer
+
+This repository is for research and engineering exploration only. It is software-method and benchmark scaffolding for synthetic RF simulation, baseline beamforming, quaternionic wavefield analysis, and reproducibility studies. It is not for clinical use.
+
 ## Motivation
 
 Conventional ultrasound pipelines often separate amplitude, phase, channel geometry, beamforming, and reconstruction into isolated steps. This project explores whether quaternionic representations can encode richer orientation, phase, and wavefield structure in a unified software object, enabling better research diagnostics, coherence scoring, artifact detection, and reconstruction experiments.
@@ -34,21 +38,24 @@ Quaternionic and QSG-inspired software methods may provide a useful layer for re
 
 ## Current capability
 
-### Phase 1
+### Phase 1: Synthetic pulse-echo baseline
 
-- Synthetic pulse-echo RF simulation
-- Linear-array geometry
-- Point-scatterer phantom generation
-- Baseline delay-and-sum beamforming
-- Conventional coherence metrics
+This repo can now:
 
-### Phase 2
+- define simplified linear-array ultrasound geometry
+- define point-scatterer phantoms
+- generate Gaussian-modulated pulses
+- simulate synthetic pulse-echo RF channel data
+- run baseline plane-wave delay-and-sum beamforming
+- apply FFT envelope detection and log compression
+- compute conventional coherence and image-comparison metrics
 
-- FFT analytic-signal extraction
-- Quaternionic RF channel lift
-- Pixel-specific orientation-axis encoding
-- Quaternionic alignment image
-- Conventional-vs-quaternionic synthetic benchmark scaffolding
+### Phase 2: Quaternionic comparison layer (research prototype)
+
+- FFT analytic-signal extraction for RF channels
+- Quaternionic channel-wavefield lift with orientation-axis encoding
+- Pixel-local quaternionic alignment and intensity image baselines
+- Conventional-vs-quaternionic synthetic benchmark scripts
 
 ## Near-term roadmap
 
@@ -71,20 +78,32 @@ pip install -e ".[dev]"
 ```python
 import numpy as np
 
-from medical_ultrasound_systems.coherence import coherence_score
-from medical_ultrasound_systems.simulation import synthetic_plane_wave
+from medical_ultrasound_systems.beamforming import delay_and_sum_plane_wave, log_compress
+from medical_ultrasound_systems.geometry import LinearArrayGeometry
+from medical_ultrasound_systems.phantom import single_point_phantom
+from medical_ultrasound_systems.simulation import simulate_pulse_echo_rf
 
-reference = synthetic_plane_wave(n_samples=128)
-observed = synthetic_plane_wave(n_samples=128)
+geometry = LinearArrayGeometry(n_elements=32, pitch_m=0.0003, center_frequency_hz=5e6)
+phantom = single_point_phantom(x_m=0.0, z_m=0.03, amplitude=1.0)
 
-score = coherence_score(reference.samples, observed.samples)
-print(f"Placeholder coherence score: {score:.3f}")
+rf = simulate_pulse_echo_rf(
+    geometry=geometry,
+    phantom=phantom,
+    sample_rate_hz=40e6,
+    center_frequency_hz=5e6,
+    duration_s=80e-6,
+)
+
+x_grid_m = np.linspace(-0.012, 0.012, 96)
+z_grid_m = np.linspace(0.01, 0.06, 128)
+
+das = delay_and_sum_plane_wave(rf=rf, x_grid_m=x_grid_m, z_grid_m=z_grid_m)
+image = log_compress(das)
+
+print("RF shape:", rf.samples.shape)
+print("Image shape:", image.shape)
 ```
-
-## Medical and regulatory disclaimer
-
-This repository is for research and engineering exploration only. It is a benchmark candidate and software-method prototype set that requires further validation. It is not for clinical use.
 
 ## RQM Technologies positioning
 
-RQM Technologies develops geometry-native software methods for wave analysis, quantum systems, sensing, imaging, and signal-processing workflows.
+RQM Technologies develops geometry-native software methods for wave analysis, quantum systems, sensing, imaging, and signal-processing workflows. RQM Technologies is not an ultrasound hardware manufacturer.

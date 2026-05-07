@@ -9,9 +9,10 @@
   - Orientation-axis encoding
   - Quaternionic channel-wavefield representation
   - Quaternionic alignment image
-  - Conventional-vs-quaternionic benchmark scripts
+  - Conventional-vs-quaternionic synthetic benchmarks
 - **Phase 3: Robustness and reporting**
-  - Noise and dropout robustness experiments
+  - Additive noise experiments
+  - Channel dropout experiments
   - Plotting utilities
   - Small public dataset ingestion where licensing allows
   - Report-generation notebooks

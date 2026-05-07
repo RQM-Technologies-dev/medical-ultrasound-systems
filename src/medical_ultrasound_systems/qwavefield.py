@@ -21,8 +21,8 @@ class QuaternionicChannelWavefield:
 
     def __post_init__(self) -> None:
         self.samples = np.asarray(self.samples, dtype=float)
-        if self.samples.ndim < 1 or self.samples.shape[-1] != 4:
-            raise ValueError("samples must have shape (..., 4).")
+        if self.samples.ndim != 3 or self.samples.shape[-1] != 4:
+            raise ValueError("samples must have shape (n_channels, n_samples, 4).")
         self.sample_rate_hz = float(self.sample_rate_hz)
         if self.sample_rate_hz <= 0.0:
             raise ValueError("sample_rate_hz must be positive.")
@@ -34,16 +34,12 @@ class QuaternionicChannelWavefield:
 
     @property
     def n_samples(self) -> int:
-        """Return temporal sample count when represented as channels x samples x 4."""
-        if self.samples.ndim < 2:
-            return 0
-        return int(self.samples.shape[-2])
+        """Return temporal sample count for channels x samples x 4 arrays."""
+        return int(self.samples.shape[1])
 
     @property
-    def n_channels(self) -> int | None:
-        """Return channel count when array is organized as channels x samples x 4."""
-        if self.samples.ndim < 3:
-            return None
+    def n_channels(self) -> int:
+        """Return channel count for channels x samples x 4 arrays."""
         return int(self.samples.shape[0])
 
 
@@ -107,8 +103,8 @@ def rf_to_quaternionic_channels(
 
     metadata = {
         "source": "RFChannelData",
-        "analytic_method": "fft_hilbert_approximation",
-        "orientation_model": "simplified_array_geometry_proxy",
+        "analytic_method": "FFT Hilbert approximation",
+        "orientation_model": "simplified array-geometry proxy",
     }
     return QuaternionicChannelWavefield(
         samples=q_samples,

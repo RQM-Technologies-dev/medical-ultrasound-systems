@@ -14,6 +14,16 @@ def test_analytic_signal_fft_returns_complex_same_shape():
     assert np.iscomplexobj(analytic)
 
 
+def test_analytic_signal_fft_complex_input_passthrough():
+    signal = np.random.default_rng(2).standard_normal((3, 16)) + 1j * np.random.default_rng(3).standard_normal(
+        (3, 16)
+    )
+    analytic = analytic_signal_fft(signal, axis=-1)
+    assert analytic.shape == signal.shape
+    assert np.iscomplexobj(analytic)
+    assert np.allclose(analytic, signal)
+
+
 def test_instantaneous_phase_and_amplitude_are_finite():
     signal = np.random.default_rng(1).standard_normal((3, 64))
     phase = instantaneous_phase(signal, axis=-1)
