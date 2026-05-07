@@ -26,4 +26,18 @@ Initial benchmark tracks include:
 - Multiple-scatterer ambiguity analysis on controlled phantoms
 - Runtime scaling with `n_elements` and image-grid size
 
+## Phase 3 robustness sweep
+
+Phase 3 adds a no-plot synthetic robustness sweep with reproducible reports:
+
+- clean baseline
+- additive-noise SNR perturbations
+- channel-dropout perturbations
+- channel gain-jitter perturbations
+- localization error against known target coordinates
+- peak-to-sidelobe ratio for peak quality
+- runtime tracking per reconstruction method
+
+Outputs are written as JSON/CSV records for reproducibility and downstream analysis.
+
 These benchmarks are intended to produce technical evidence for research and partner evaluation, not clinical claims.

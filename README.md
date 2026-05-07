@@ -57,6 +57,15 @@ This repo can now:
 - Pixel-local quaternionic alignment and intensity image baselines
 - Conventional-vs-quaternionic synthetic benchmark scripts
 
+### Phase 3: Robustness and reproducible reports
+
+- additive-noise perturbation tests
+- channel-dropout perturbation tests
+- channel gain-jitter tests
+- analytic-phase quaternionic delay alignment
+- conventional-vs-quaternionic localization and peak-quality reporting
+- JSON/CSV benchmark reports
+
 ## Near-term roadmap
 
 - Synthetic wavefield simulation
