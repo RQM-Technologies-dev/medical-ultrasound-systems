@@ -10,13 +10,14 @@ def analytic_signal_fft(signal: np.ndarray, axis: int = -1) -> np.ndarray:
 
     This is a lightweight research implementation of a Hilbert-transform style
     analytic-signal lift and is intended for synthetic benchmarking workflows,
-    not calibrated clinical signal processing.
+    not a calibrated scanner signal-processing chain.
     """
     signal = np.asarray(signal)
     if np.iscomplexobj(signal):
-        raise ValueError("analytic_signal_fft expects real-valued input.")
+        return signal.astype(np.complex128, copy=False)
 
     signal = signal.astype(float, copy=False)
+    axis = int(axis)
     n = signal.shape[axis]
     if n == 0:
         return signal.astype(np.complex128)

@@ -20,10 +20,10 @@ Initial benchmark tracks include:
 ## Phase 2 benchmark plan
 
 - Single-point localization with conventional and quaternionic map comparisons
-- Quaternionic alignment factor versus conventional coherence factor behavior
+- Quaternionic alignment vs conventional coherence behavior
 - Robustness to channel dropout in synthetic RF channels
 - Robustness to additive RF noise perturbations
 - Multiple-scatterer ambiguity analysis on controlled phantoms
-- Runtime scaling with `n_elements`, RF sample count, and grid dimensions
+- Runtime scaling with `n_elements` and image-grid size
 
 These benchmarks are intended to produce technical evidence for research and partner evaluation, not clinical claims.

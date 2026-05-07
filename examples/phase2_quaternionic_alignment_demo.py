@@ -22,6 +22,7 @@ def _peak_location(image: np.ndarray, x_grid_m: np.ndarray, z_grid_m: np.ndarray
 
 def main() -> None:
     """Run synthetic Phase 2 comparisons without plotting."""
+    # This is synthetic research software and not clinical imaging software.
     geometry = LinearArrayGeometry(n_elements=32, pitch_m=0.0003, center_frequency_hz=5e6)
     phantom = single_point_phantom(x_m=0.0, z_m=0.03, amplitude=1.0)
     rf = simulate_pulse_echo_rf(geometry=geometry, phantom=phantom)
