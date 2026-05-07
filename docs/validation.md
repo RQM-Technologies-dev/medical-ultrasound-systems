@@ -2,10 +2,11 @@
 
 Validation workstreams are planned as:
 
-1. Synthetic phantom studies with known ground truth.
-2. Open research datasets where available and licensing permits.
-3. Quantitative comparison against accepted baseline methods.
-4. Partner/OEM and academic review of assumptions and results.
-5. Clear regulatory separation from any clinical software pathways.
+1. Synthetic unit tests.
+2. Known-geometry point-target checks.
+3. Conventional delay-and-sum baseline parity checks.
+4. Public/open research ultrasound datasets where licensing permits.
+5. OEM/academic expert review of assumptions and findings.
+6. Regulatory-pathway separation if future productization is pursued.
 
 All findings should be presented with uncertainty bounds, limitations, and reproducibility notes.
