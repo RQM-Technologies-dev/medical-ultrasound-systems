@@ -9,3 +9,17 @@ The repository is organized as an R&D software stack:
 5. **Validation package**: assemble evidence artifacts, assumptions, and limitations for partner review.
 
 This layered structure supports incremental experimentation while keeping research scope and regulatory separation explicit.
+
+## Phase 1 processing pipeline
+
+Phase 1 baseline experiments follow this synthetic research pipeline:
+
+Linear array geometry  
+→ point-scatterer phantom  
+→ pulse-echo RF simulation  
+→ baseline delay-and-sum beamforming  
+→ envelope/log compression  
+→ coherence and error metrics  
+→ future quaternionic/QSG comparison layer
+
+This pipeline is a software benchmark scaffold and not a validated clinical imaging workflow.
