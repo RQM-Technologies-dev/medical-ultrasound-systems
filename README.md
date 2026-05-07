@@ -27,10 +27,28 @@ Quaternionic and QSG-inspired software methods may provide a useful layer for re
 - `quaternion.py`: lightweight quaternion math utilities
 - `wavefield.py`: synthetic ultrasound wavefield containers
 - `coherence.py`: coherence and alignment metrics
-- `beamforming.py`: research beamforming placeholders
+- `beamforming.py`: baseline delay-and-sum beamforming and post-processing
 - `reconstruction.py`: reconstruction experiment interfaces
 - `metrics.py`: benchmark metrics
 - `simulation.py`: synthetic phantom and channel simulation helpers
+
+## Current capability
+
+### Phase 1
+
+- Synthetic pulse-echo RF simulation
+- Linear-array geometry
+- Point-scatterer phantom generation
+- Baseline delay-and-sum beamforming
+- Conventional coherence metrics
+
+### Phase 2
+
+- FFT analytic-signal extraction
+- Quaternionic RF channel lift
+- Pixel-specific orientation-axis encoding
+- Quaternionic alignment image
+- Conventional-vs-quaternionic synthetic benchmark scaffolding
 
 ## Near-term roadmap
 

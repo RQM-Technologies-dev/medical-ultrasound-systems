@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import numpy as np
 
+from .analytic import instantaneous_amplitude
+from .delay import pixel_travel_times_plane_wave, sample_rf_nearest
 from .simulation import RFChannelData
 
 
@@ -29,48 +31,20 @@ def delay_and_sum_plane_wave(
     if c <= 0.0:
         raise ValueError("sound_speed_m_s must be positive.")
 
-    sample_rate_hz = rf.sample_rate_hz
-    n_channels, n_samples = rf.samples.shape
-    element_x = rf.geometry.element_positions_m[:, 0]
     image = np.zeros((z_grid_m.size, x_grid_m.size), dtype=float)
 
     for iz, z_m in enumerate(z_grid_m):
-        tx_time_s = z_m / c
         for ix, x_m in enumerate(x_grid_m):
-            rx_time_s = np.sqrt((element_x - x_m) ** 2 + z_m**2) / c
-            total_time_s = tx_time_s + rx_time_s
-            sample_idx = np.rint(total_time_s * sample_rate_hz).astype(int)
-            valid = (sample_idx >= 0) & (sample_idx < n_samples)
-            if np.any(valid):
-                ch_idx = np.arange(n_channels)[valid]
-                image[iz, ix] = float(np.sum(rf.samples[ch_idx, sample_idx[valid]]))
+            travel_times_s = pixel_travel_times_plane_wave(
+                rf.geometry, x_m=float(x_m), z_m=float(z_m), sound_speed_m_s=c
+            )
+            image[iz, ix] = float(np.sum(sample_rf_nearest(rf, travel_times_s)))
     return image
 
 
 def envelope_detect_fft(signal: np.ndarray, axis: int = -1) -> np.ndarray:
     """Return envelope magnitude using an FFT analytic-signal approximation."""
-    signal = np.asarray(signal)
-    if np.iscomplexobj(signal):
-        raise ValueError("envelope_detect_fft expects real-valued input.")
-    signal = signal.astype(float, copy=False)
-    n = signal.shape[axis]
-    if n == 0:
-        return np.zeros_like(signal, dtype=float)
-
-    spectrum = np.fft.fft(signal, axis=axis)
-    h = np.zeros(n, dtype=float)
-    if n % 2 == 0:
-        h[0] = 1.0
-        h[n // 2] = 1.0
-        h[1 : n // 2] = 2.0
-    else:
-        h[0] = 1.0
-        h[1 : (n + 1) // 2] = 2.0
-
-    shape = [1] * signal.ndim
-    shape[axis] = n
-    analytic = np.fft.ifft(spectrum * h.reshape(shape), axis=axis)
-    return np.abs(analytic)
+    return instantaneous_amplitude(signal, axis=axis)
 
 
 def log_compress(image: np.ndarray, dynamic_range_db: float = 60.0) -> np.ndarray:

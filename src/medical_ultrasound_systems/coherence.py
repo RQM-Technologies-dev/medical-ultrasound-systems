@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import numpy as np
 
+from .delay import pixel_travel_times_plane_wave, sample_rf_nearest
 from .quaternion import quaternion_normalize
+from .simulation import RFChannelData
 
 
 def coherence_score(reference: np.ndarray, observed: np.ndarray) -> float:
@@ -46,3 +48,30 @@ def channel_coherence_factor(channel_values: np.ndarray, axis: int = 0) -> np.nd
 def quaternion_alignment_score(reference: np.ndarray, observed: np.ndarray) -> float:
     """Domain-readable wrapper for quaternion coherence alignment scoring."""
     return coherence_score(reference, observed)
+
+
+def conventional_coherence_image(
+    rf: RFChannelData,
+    x_grid_m: np.ndarray,
+    z_grid_m: np.ndarray,
+    sound_speed_m_s: float | None = None,
+) -> np.ndarray:
+    """Compute a conventional channel-coherence image on a Cartesian grid."""
+    x_grid_m = np.asarray(x_grid_m, dtype=float)
+    z_grid_m = np.asarray(z_grid_m, dtype=float)
+    if x_grid_m.ndim != 1 or z_grid_m.ndim != 1:
+        raise ValueError("x_grid_m and z_grid_m must be 1D arrays.")
+
+    c = rf.sound_speed_m_s if sound_speed_m_s is None else float(sound_speed_m_s)
+    if c <= 0.0:
+        raise ValueError("sound_speed_m_s must be positive.")
+
+    image = np.zeros((z_grid_m.size, x_grid_m.size), dtype=float)
+    for iz, z_m in enumerate(z_grid_m):
+        for ix, x_m in enumerate(x_grid_m):
+            travel_times_s = pixel_travel_times_plane_wave(
+                rf.geometry, x_m=float(x_m), z_m=float(z_m), sound_speed_m_s=c
+            )
+            channel_values = sample_rf_nearest(rf, travel_times_s)
+            image[iz, ix] = float(channel_coherence_factor(channel_values, axis=0))
+    return image
