@@ -15,3 +15,8 @@ All findings should be presented with uncertainty bounds, limitations, and repro
 Phase 3 remains synthetic-only and does not validate clinical performance. It is intended to
 test numerical behavior under controlled perturbations before using open research datasets or
 partner-provided data.
+
+Synthetic robustness tests are not clinical validation.
+These tests only establish engineering behavior in controlled simulations.
+Any future clinical workflow would require independent datasets, quality controls,
+regulatory strategy, and domain-expert review.
