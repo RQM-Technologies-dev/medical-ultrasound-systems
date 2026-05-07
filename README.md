@@ -1,10 +1,20 @@
 # medical-ultrasound-systems
 
-Research software for exploring quaternionic and orientation-aware signal-processing methods for medical ultrasound systems.
+Software research layer for quaternionic ultrasound wavefield analysis, coherence diagnostics, and synthetic benchmark evaluation.
+
+## Executive summary
+
+Ultrasound systems already produce rich RF channel data before final image formation. That RF stage contains amplitude, phase, channel-by-channel timing behavior, and array-geometry context that can be valuable for engineering analysis and algorithm development.
+
+Conventional pipelines typically process amplitude, phase, channel delay, geometry, beamforming, and coherence through separate steps. This is effective for production imaging workflows, but it can make it harder to study some channel-level interactions in one unified software representation during research.
+
+This repository explores whether a quaternionic representation can combine amplitude, phase, and receive geometry into a single software object for research diagnostics and benchmark comparisons. The intent is to create a candidate software layer that may support deeper technical evaluation of coherence and orientation structure in synthetic studies.
+
+The proposed upgrade is software-only and sits after RF/channel acquisition, before or alongside beamforming/reconstruction evaluation. It does not replace probes, scanners, transducers, or certified clinical pipelines. This repository is not clinical software; it is a synthetic research and evidence-building repository.
 
 ## What this repo is
 
-This repository gathers theory notes, software prototypes, simulation utilities, benchmarking infrastructure, and validation materials for studying whether quaternionic representations may improve ultrasound wave analysis and reconstruction workflows.
+This repository gathers theory notes, software prototypes, synthetic simulation utilities, benchmark infrastructure, and validation guidance for evaluating quaternionic wavefield-analysis methods alongside conventional ultrasound processing baselines.
 
 ## What this repo is not
 
@@ -18,23 +28,84 @@ This repository gathers theory notes, software prototypes, simulation utilities,
 
 This repository is for research and engineering exploration only. It is software-method and benchmark scaffolding for synthetic RF simulation, baseline beamforming, quaternionic wavefield analysis, and reproducibility studies. It is not for clinical use.
 
-## Motivation
+## What problem are we addressing?
 
-Conventional ultrasound pipelines often separate amplitude, phase, channel geometry, beamforming, and reconstruction into isolated steps. This project explores whether quaternionic representations can encode richer orientation, phase, and wavefield structure in a unified software object, enabling better research diagnostics, coherence scoring, artifact detection, and reconstruction experiments.
+Ultrasound image quality and robustness are influenced by phase alignment, channel coherence, multipath, reverberation, sidelobes, gain imbalance, channel dropout, and noise. These effects are deeply geometric because they depend on array layout, propagation paths, and channel timing relationships.
 
-## Core research hypothesis
+Conventional scalar or complex-only views can collapse some geometric structure early in the processing chain. That may reduce visibility into certain orientation-aware or channel-interaction effects during algorithm research.
 
-Quaternionic and QSG-inspired software methods may provide a useful layer for representing ultrasound wavefields with phase, orientation, polarization-like directional structure, channel geometry, and coherence in a single mathematical object.
+The research question here is whether quaternionic wavefield representations can expose more useful coherence and orientation structure for software analysis, synthetic benchmarking, and candidate-method comparison.
 
-## Initial technical modules
+## What is the proposed software upgrade?
 
-- `quaternion.py`: lightweight quaternion math utilities
-- `wavefield.py`: synthetic ultrasound wavefield containers
-- `coherence.py`: coherence and alignment metrics
-- `beamforming.py`: baseline delay-and-sum beamforming and post-processing
-- `reconstruction.py`: reconstruction experiment interfaces
-- `metrics.py`: benchmark metrics
-- `simulation.py`: synthetic phantom and channel simulation helpers
+Existing ultrasound system:
+
+Probe / transducer array  
+→ RF channel data  
+→ beamforming  
+→ image reconstruction  
+→ display / analysis
+
+RQM research layer:
+
+RF channel data  
+→ analytic signal  
+→ quaternionic wavefield representation  
+→ quaternionic alignment/coherence metrics  
+→ comparison against conventional beamforming/coherence outputs
+
+This is a software-only evaluation layer for research and engineering. It does not replace hardware, it is not used for clinical decision-making, and it is not an FDA-cleared workflow.
+
+```text
+Conventional ultrasound stack
+
+Transducer array
+   ↓
+RF channel data
+   ↓
+Delay / phase processing
+   ↓
+Beamforming
+   ↓
+Image reconstruction
+   ↓
+Display / downstream analysis
+
+
+RQM research upgrade layer
+
+RF channel data
+   ↓
+Analytic amplitude + phase extraction
+   ↓
+Quaternionic wavefield lift
+   ↓
+Orientation-aware channel alignment
+   ↓
+Quaternionic coherence / intensity maps
+   ↓
+Benchmark comparison against conventional outputs
+```
+
+## What parts of the ultrasound stack does this touch?
+
+- RF channel data handling (software-side representation only)
+- analytic signal extraction and phase-aware transforms
+- channel alignment and coherence diagnostics
+- synthetic benchmark comparison against conventional beamforming/coherence outputs
+- reporting of localization and runtime research metrics
+
+It does not modify probe hardware, transducer physics, scanner firmware, or certified clinical workflow components.
+
+## What evidence currently exists?
+
+Current evidence in this repository is synthetic and engineering-focused:
+
+- reproducible pulse-echo RF simulation and linear-array geometry modeling
+- baseline delay-and-sum and conventional coherence reference methods
+- quaternionic channel lift, alignment, and intensity map prototypes
+- Phase 3 synthetic robustness experiments (noise, dropout, gain variation, timing jitter)
+- benchmark outputs in JSON/CSV/Markdown for method comparison and auditability
 
 ## Current capability
 
@@ -62,6 +133,20 @@ Quaternionic and QSG-inspired software methods may provide a useful layer for re
 - localization-error reporting
 - JSON/CSV/Markdown benchmark outputs
 
+## What validation would be needed before any real-world deployment?
+
+Synthetic robustness tests are not clinical validation. These tests establish engineering behavior in controlled simulations only.
+
+Any future real-world deployment pathway would require, at minimum:
+
+- independent non-synthetic datasets with documented quality controls
+- scanner and site variability studies across hardware/software configurations
+- protocol-defined performance and failure-mode characterization
+- regulatory strategy and compliance planning
+- domain-expert review with clinical governance and safety oversight
+
+This repository does not make efficacy or regulatory claims. It is a research prototype and synthetic benchmark environment that requires further validation.
+
 ## Run Phase 3 benchmark
 
 ```bash
@@ -73,16 +158,6 @@ Outputs are written to:
 - `benchmarks/output/phase3_results.json`
 - `benchmarks/output/phase3_results.csv`
 - `benchmarks/output/phase3_summary.md`
-
-## Near-term roadmap
-
-- Synthetic wavefield simulation
-- Quaternionic channel representation
-- Baseline delay-and-sum comparison hooks
-- Coherence metric development
-- Artifact and multipath diagnostics
-- Benchmark notebook examples
-- Partner/OEM validation pathway
 
 ## Installation
 
