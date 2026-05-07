@@ -26,18 +26,30 @@ Initial benchmark tracks include:
 - Multiple-scatterer ambiguity analysis on controlled phantoms
 - Runtime scaling with `n_elements` and image-grid size
 
-## Phase 3 robustness sweep
+## Phase 3: Robustness Benchmark Layer
 
-Phase 3 adds a no-plot synthetic robustness sweep with reproducible reports:
+Phase 3 introduces a lightweight synthetic robustness benchmark layer for
+comparing conventional and quaternionic research metrics under controlled
+perturbations.
 
-- clean baseline
-- additive-noise SNR perturbations
-- channel-dropout perturbations
-- channel gain-jitter perturbations
-- localization error against known target coordinates
-- peak-to-sidelobe ratio for peak quality
-- runtime tracking per reconstruction method
+Synthetic perturbations are designed to stress the processing pipeline.
+The goal is not to prove clinical superiority. The goal is to compare
+conventional and quaternionic benchmark candidates under reproducible synthetic
+conditions.
 
-Outputs are written as JSON/CSV records for reproducibility and downstream analysis.
+### Metrics
 
-These benchmarks are intended to produce technical evidence for research and partner evaluation, not clinical claims.
+- peak localization error
+- peak value
+- runtime
+- method-by-method summary statistics
+
+### Perturbations
+
+- additive white Gaussian noise (AWGN)
+- channel dropout
+- channel gain variation
+- timing jitter
+
+Phase 3 outputs JSON/CSV/Markdown artifacts for reproducible synthetic
+evaluation and requires further validation before any external deployment claims.

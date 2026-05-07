@@ -40,15 +40,15 @@ RFChannelData
 This layer remains a synthetic software-method prototype for technical evidence
 generation and does not imply clinical readiness.
 
-## Phase 3 robustness pipeline
+## Phase 3 robustness architecture
 
-Phase 3 adds perturbation-first robustness benchmarking and reproducible reports:
+Synthetic RF  
+→ optional perturbation layer  
+→ conventional image/coherence maps  
+→ quaternionic alignment/intensity maps  
+→ peak extraction  
+→ localization error  
+→ JSON/CSV/Markdown report
 
-RF simulation  
-→ perturbation model  
-→ DAS / conventional coherence / quaternionic analytic alignment  
-→ peak localization metrics  
-→ peak-to-sidelobe metrics  
-→ JSON/CSV benchmark report
-
-This remains synthetic-only research software and not a validated clinical workflow.
+This architecture is a synthetic research stack for benchmark comparisons and
+requires validation. It is not a clinical workflow.

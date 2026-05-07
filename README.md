@@ -40,31 +40,39 @@ Quaternionic and QSG-inspired software methods may provide a useful layer for re
 
 ### Phase 1: Synthetic pulse-echo baseline
 
-This repo can now:
-
-- define simplified linear-array ultrasound geometry
-- define point-scatterer phantoms
-- generate Gaussian-modulated pulses
-- simulate synthetic pulse-echo RF channel data
-- run baseline plane-wave delay-and-sum beamforming
-- apply FFT envelope detection and log compression
-- compute conventional coherence and image-comparison metrics
+- synthetic pulse-echo RF simulation
+- linear array geometry
+- point-scatterer phantom
+- baseline delay-and-sum beamforming
+- conventional coherence metrics
 
 ### Phase 2: Quaternionic comparison layer (research prototype)
 
-- FFT analytic-signal extraction for RF channels
-- Quaternionic channel-wavefield lift with orientation-axis encoding
-- Pixel-local quaternionic alignment and intensity image baselines
-- Conventional-vs-quaternionic synthetic benchmark scripts
+- FFT analytic-signal extraction
+- quaternionic RF channel lift
+- pixel-specific orientation axes
+- quaternionic alignment image
+- quaternionic intensity image
 
 ### Phase 3: Robustness and reproducible reports
 
-- additive-noise perturbation tests
-- channel-dropout perturbation tests
-- channel gain-jitter tests
-- analytic-phase quaternionic delay alignment
-- conventional-vs-quaternionic localization and peak-quality reporting
-- JSON/CSV benchmark reports
+- additive noise experiments
+- channel dropout experiments
+- gain/timing perturbation experiments
+- localization-error reporting
+- JSON/CSV/Markdown benchmark outputs
+
+## Run Phase 3 benchmark
+
+```bash
+python benchmarks/phase3_robustness_sweep.py
+```
+
+Outputs are written to:
+
+- `benchmarks/output/phase3_results.json`
+- `benchmarks/output/phase3_results.csv`
+- `benchmarks/output/phase3_summary.md`
 
 ## Near-term roadmap
 
