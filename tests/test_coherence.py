@@ -8,8 +8,7 @@ from medical_ultrasound_systems.coherence import (
 )
 from medical_ultrasound_systems.geometry import LinearArrayGeometry
 from medical_ultrasound_systems.phantom import single_point_phantom
-from medical_ultrasound_systems.simulation import simulate_pulse_echo_rf
-from medical_ultrasound_systems.simulation import synthetic_plane_wave
+from medical_ultrasound_systems.simulation import simulate_pulse_echo_rf, synthetic_plane_wave
 
 
 def test_coherence_identical_is_one():

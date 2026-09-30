@@ -23,7 +23,7 @@ def _write_csv_records(path: str | Path, records: list[dict]) -> None:
         out_path.write_text("", encoding="utf-8")
         return
 
-    fieldnames = sorted({key for record in records for key in record.keys()})
+    fieldnames = sorted({key for record in records for key in record})
     with out_path.open("w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -81,8 +81,10 @@ def format_summary_markdown(
     lines = [
         f"# {title}",
         "",
-        "Synthetic benchmark-candidate summary for research metrics only. "
-        "These outputs require validation and are not clinical evidence.",
+        (
+            "Synthetic benchmark-candidate summary for research metrics only. "
+            "These outputs require validation and are not clinical evidence."
+        ),
         "",
     ]
     if not summary:
