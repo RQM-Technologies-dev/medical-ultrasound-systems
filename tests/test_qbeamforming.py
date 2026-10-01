@@ -1,5 +1,5 @@
-import pytest
 import numpy as np
+import pytest
 
 from medical_ultrasound_systems.geometry import LinearArrayGeometry
 from medical_ultrasound_systems.phantom import single_point_phantom
